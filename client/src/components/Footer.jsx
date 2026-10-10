@@ -1,3 +1,4 @@
+import React from 'react';
 import {Link} from 'react-router-dom';
 import Brand from './Brand.jsx';
 import {ShieldCheck} from 'lucide-react';

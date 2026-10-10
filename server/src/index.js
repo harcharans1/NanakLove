@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import { env, hasSupabase } from './config/env.js';
 import booksRouter from './routes/books.js';
 import radioRouter from './routes/radio.js';
+import contactRouter from './routes/contact.js';
 
 const app = express();
 app.disable('x-powered-by');
@@ -16,6 +17,7 @@ app.use(morgan('dev'));
 app.get('/api/health', (_req, res) => res.json({ status: 'ok', service: 'nanaklove-api', database: hasSupabase ? 'configured' : 'fallback-mode' }));
 app.use('/api/books', booksRouter);
 app.use('/api/radio', radioRouter);
+app.use('/api/contact', contactRouter);
 app.use((_req, res) => res.status(404).json({ error: 'API route not found.' }));
 app.use((err, _req, res, _next) => {
   console.error(err);

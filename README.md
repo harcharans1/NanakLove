@@ -1,55 +1,75 @@
-# NanakLove Full-Stack Starter
+# NanakLove
 
-React + Vite frontend and Node.js + Express backend, designed for a Supabase database.
+A responsive React + Vite frontend with a Node.js/Express API and Supabase database for a physical Gurbani book catalogue and live radio stations.
 
-## What's included
-- Express REST API with health endpoint
-- Books list, create, update and delete API
-- Radio stations list, create, update and delete API
-- Supabase integration when environment variables are configured
-- Development fallback data when Supabase is not configured (not persistent)
-- Basic admin API-key middleware for write routes
-- CORS configuration
-- React frontend with Books and Live Radio pages from the prior frontend bundle
-- Admin API routes are not a complete production authentication system
+## Requirements
 
-## Setup
-Requirements: Node.js 20+ recommended.
+- Node.js 20 LTS or newer
+- npm
+- A Supabase project (optional for running the demo fallback)
 
-1. Extract the ZIP.
-2. In VS Code, open the extracted folder.
-3. Copy `server/.env.example` to `server/.env`.
-4. Fill in Supabase Project URL, Supabase service role key, and a long random `ADMIN_API_KEY`.
-5. In `client/.env`, set `VITE_API_URL=http://localhost:4000/api`.
-6. In terminal run:
-   ```bash
-   npm install
-   npm --prefix server install
-   npm --prefix client install
-   npm run dev
-   ```
-7. Open Vite's local URL, usually http://localhost:5173. API health: http://localhost:4000/api/health
+## Run locally
+
+Open the extracted project root (the folder containing the root `package.json`) in VS Code.
+
+```bash
+npm install
+npm --prefix server install
+npm --prefix client install
+npm run dev
+```
+
+Open the frontend at http://localhost:5173 and API health check at http://localhost:4000/api/health.
 
 ## Supabase setup
-Run `supabase/schema.sql` in Supabase SQL Editor.
 
-Tables:
-- `books`: physical book metadata, no digital book file storage by default
-- `radio_stations`: station metadata and stream URL
+1. Open Supabase SQL Editor.
+2. Copy all of `supabase/schema.sql` into a new query and run it.
+3. Copy `server/.env.example` to `server/.env`.
+4. Add your Supabase Project URL and **server-only** secret/service role key to `server/.env`.
+5. Set a strong unique `ADMIN_API_KEY` of at least 32 characters.
+6. Restart the dev servers.
 
-Use the Supabase **service_role** key only in `server/.env`. Never put it in `client/.env` or frontend code. Do not commit `.env` files.
+Example `server/.env`:
 
-## API
-- `GET /api/health`
-- `GET /api/books?q=&category=`
-- `GET /api/books/:id`
-- `POST /api/books` (requires `x-admin-key`)
-- `PUT /api/books/:id` (requires `x-admin-key`)
-- `DELETE /api/books/:id` (requires `x-admin-key`)
-- `GET /api/radio`
-- `POST /api/radio` (requires `x-admin-key`)
-- `PUT /api/radio/:id` (requires `x-admin-key`)
-- `DELETE /api/radio/:id` (requires `x-admin-key`)
+```dotenv
+PORT=4000
+CLIENT_ORIGIN=http://localhost:5173
+SUPABASE_URL=https://YOUR_PROJECT_ID.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=YOUR_SERVER_ONLY_SECRET_KEY
+ADMIN_API_KEY=YOUR_UNIQUE_RANDOM_SECRET_OF_32_CHARS_OR_MORE
+```
 
-## Important security note
-The API key middleware is a development scaffold, not a user-management system. For public production deployment, replace it with Supabase Auth/JWT role checks, rate limiting, validation, audit logs and secure secret rotation. The API must not be exposed publicly with a weak key. Keep streams and book data accurate and verify rights before publishing.
+Never put the Supabase secret/service-role key in `client/.env`, source code, screenshots, or GitHub. Do not commit `.env` files. The `.gitignore` excludes them.
+
+The frontend's optional API base is `client/.env`:
+
+```dotenv
+VITE_API_URL=http://localhost:4000/api
+```
+
+Only public frontend-safe values belong in `client/.env`.
+
+## Pages
+
+- `/` — Home
+- `/books` — book catalogue
+- `/radio` — live radio player
+- `/about` — about NanakLove
+- `/contact` — contact form (requires Supabase and the schema)
+- `/admin` — basic admin-key protected management screen
+
+## Important limitations before public launch
+
+- The fallback books are placeholders, not your actual physical collection. Replace them with verified book data.
+- Radio streams depend on the broadcaster and may change or be unavailable.
+- The admin interface uses a shared API key as a starter gate, not a full user-account system. For production, replace it with Supabase Auth and proper role-based authorization, add rate limiting, and review hosting secrets/CORS.
+- Do not expose the service-role key to the browser.
+- The contact form stores messages in Supabase; it does not email them automatically.
+- The backend must be deployed separately from Netlify. Set `VITE_API_URL` to the deployed API URL when deploying the frontend.
+
+## Build the frontend
+
+```bash
+npm --prefix client run build
+```

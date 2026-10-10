@@ -49,3 +49,14 @@ alter table public.books enable row level security;
 alter table public.radio_stations enable row level security;
 
 -- No anon policies are created intentionally. The Node API uses the server-only service role key.
+
+
+-- Contact form submissions are private; only the server service role may access them.
+create table if not exists public.contact_messages (
+  id uuid primary key default gen_random_uuid(),
+  name text not null check (char_length(name) between 2 and 100),
+  email text not null check (char_length(email) <= 254),
+  message text not null check (char_length(message) between 5 and 5000),
+  created_at timestamptz not null default now()
+);
+alter table public.contact_messages enable row level security;

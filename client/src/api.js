@@ -19,6 +19,8 @@ export const api = {
   },
   getBook: (id) => request(`/books/${encodeURIComponent(id)}`),
   getRadio: () => request('/radio'),
+  getAllRadio: (adminKey) => request('/radio/admin/all', { headers: { 'x-admin-key': adminKey } }),
+  sendContact: (message) => request('/contact', { method: 'POST', body: JSON.stringify(message) }),
   createBook: (book, adminKey) => request('/books', { method: 'POST', headers: { 'x-admin-key': adminKey }, body: JSON.stringify(book) }),
   updateBook: (id, book, adminKey) => request(`/books/${encodeURIComponent(id)}`, { method: 'PUT', headers: { 'x-admin-key': adminKey }, body: JSON.stringify(book) }),
   deleteBook: (id, adminKey) => request(`/books/${encodeURIComponent(id)}`, { method: 'DELETE', headers: { 'x-admin-key': adminKey } }),
